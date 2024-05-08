@@ -4,6 +4,7 @@ import { Module, DynamicModule } from '@nestjs/common';
 
 @Module({
   providers: [FirebaseService],
+  exports: [FirebaseService],
 })
 export class FirebaseModule {
   static forRoot(options: FirebaseOptions): DynamicModule {
@@ -16,6 +17,7 @@ export class FirebaseModule {
         },
         FirebaseService,
       ],
+      exports: [FirebaseService],
     };
   }
 }
