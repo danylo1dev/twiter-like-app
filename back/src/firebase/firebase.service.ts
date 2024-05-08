@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { getFirestore } from 'firebase-admin/firestore';
 @Injectable()
 export class FirebaseService {
   private readonly app;
@@ -20,6 +21,9 @@ export class FirebaseService {
   }
   getAuth() {
     return getAuth(this.app);
+  }
+  getFirestore() {
+    return getFirestore();
   }
   async createUserWithEmailAndPassword({
     email,

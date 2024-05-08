@@ -5,6 +5,7 @@ import { FirebaseModule } from './firebase/firebase.module';
 import firebaseConfig from './config/firebase.config';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   // imports: [FirebaseModule.forRoot({ myData: 'dkaksda' })],
@@ -15,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
       expandVariables: true,
     }),
     FirebaseModule.forRoot(firebaseConfig()),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
