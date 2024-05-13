@@ -13,8 +13,8 @@ import { getFirestore } from 'firebase-admin/firestore';
 @Injectable()
 export class FirebaseService {
   private readonly app;
-  // @Inject('CONFIG_OPTIONS') firebaseConfig: FirebaseOptions
   constructor() {
+    console.log(functions.config().firebase);
     if (!admin.apps.length) {
       this.app = admin.initializeApp(functions.config().firebase);
     }

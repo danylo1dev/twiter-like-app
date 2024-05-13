@@ -18,7 +18,7 @@ import { LikeModule } from './like/like.module';
       load: [firebaseConfig],
       expandVariables: true,
     }),
-    FirebaseModule.forRoot(firebaseConfig()),
+    FirebaseModule,
     UserModule,
     PostModule,
     CommentModule,

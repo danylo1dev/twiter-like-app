@@ -18,7 +18,7 @@ export class UserRepository {
   async create(user: CreateUser) {
     return await this.userStore.doc(user.uid).set(user);
   }
-  async getOne(uid: string) {
+  async getOneByID(uid: string) {
     const doc = await this.userStore.doc(uid).get();
     if (!doc.exists) {
       console.log('No such document!');

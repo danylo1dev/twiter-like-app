@@ -8,6 +8,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ResponseAuthDto } from './dto/response.dto';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -31,7 +32,10 @@ export class AuthController {
     status: 200,
     description: 'Authorized',
   })
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.signIn(loginDto);
+  login(@Body() loginDto: LoginDto, @CurrentUser() user) {
+    return {
+      userId: user.id,
+      token: this.authService.getTokenForUser(user),
+    };
   }
 }

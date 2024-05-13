@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Auth } from 'firebase-admin/auth';
+import { User } from 'firebase/auth';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { RegisterDto } from './dto/register.dto';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +13,14 @@ export class AuthService {
   constructor(
     private readonly firebaseService: FirebaseService,
     private readonly userService: UserService,
+    private readonly jwtService: JwtService,
   ) {}
+  public getTokenForUser(user: User): string {
+    return this.jwtService.sign({
+      email: user.email,
+      sub: user.uid,
+    });
+  }
   async createUser(createAuthDto: RegisterDto) {
     const { user } = await this.firebaseService.createUserWithEmailAndPassword(
       createAuthDto,
@@ -22,8 +31,11 @@ export class AuthService {
       firstName: createAuthDto.firstName,
       lastName: createAuthDto.lastName,
     };
-    this.userService.create(userProfile);
-    return { isAuth: true, user: userProfile };
+    await this.userService.create(userProfile);
+    return {
+      userId: user.uid,
+      token: this.getTokenForUser(user),
+    };
   }
 
   async signIn(createAuthDto: LoginDto) {
