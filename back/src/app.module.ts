@@ -23,6 +23,7 @@ import { LikeModule } from './like/like.module';
     PostModule,
     CommentModule,
     LikeModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

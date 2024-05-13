@@ -3,6 +3,7 @@ import { Auth } from 'firebase-admin/auth';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from 'src/user/user.service';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,14 +19,14 @@ export class AuthService {
     const userProfile = {
       uid: user.uid,
       email: createAuthDto.email,
-      name: createAuthDto.name,
-      lastname: createAuthDto.lastname,
+      firstName: createAuthDto.firstName,
+      lastName: createAuthDto.lastName,
     };
     this.userService.create(userProfile);
-    return { isAuth: true, user: { user, userProfile } };
+    return { isAuth: true, user: userProfile };
   }
 
-  async signIn(createAuthDto: RegisterDto) {
+  async signIn(createAuthDto: LoginDto) {
     return await this.firebaseService.createUserWithEmailAndPassword(
       createAuthDto,
     );
