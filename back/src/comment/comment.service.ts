@@ -12,7 +12,7 @@ export class CommentService {
     return `This action returns all comment`;
   }
 
-  findOne(id: number) {
+  findOneById(id: number) {
     return `This action returns a #${id} comment`;
   }
 

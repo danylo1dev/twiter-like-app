@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { CreateLikeDto } from './dto/create-like.dto';
@@ -16,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('like')
 @ApiTags('like')
@@ -30,6 +32,7 @@ export class LikeController {
     description: 'Created',
     // type: ,
   })
+  @UseGuards(AuthJwtGuard)
   create(@Body() createLikeDto: CreateLikeDto) {
     return this.likeService.create(createLikeDto);
   }
@@ -60,6 +63,7 @@ export class LikeController {
     status: 200,
     // type: ,
   })
+  @UseGuards(AuthJwtGuard)
   update(@Param('id') id: string, @Body() updateLikeDto: UpdateLikeDto) {
     return this.likeService.update(id, updateLikeDto);
   }
@@ -70,6 +74,7 @@ export class LikeController {
     status: 204,
     // type: ,
   })
+  @UseGuards(AuthJwtGuard)
   async remove(@Param('id') id: string) {
     await this.likeService.remove(id);
     return;

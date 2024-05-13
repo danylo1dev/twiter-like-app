@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -16,6 +17,9 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'firebase/auth';
 
 @Controller('comment')
 @ApiTags('Comments')
@@ -28,8 +32,8 @@ export class CommentController {
   @ApiResponse({
     status: 200,
     description: 'Created',
-    // type: ,
   })
+  @UseGuards(AuthJwtGuard)
   create(@Body() createCommentDto: CreateCommentDto) {
     return this.commentService.create(createCommentDto);
   }
@@ -50,7 +54,7 @@ export class CommentController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
+    return this.commentService.findOneById(+id);
   }
 
   @HttpCode(200)
@@ -59,6 +63,7 @@ export class CommentController {
     // type: ,
   })
   @Patch(':id')
+  @UseGuards(AuthJwtGuard)
   update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
     return this.commentService.update(+id, updateCommentDto);
   }
@@ -69,7 +74,9 @@ export class CommentController {
     status: 204,
     // type: ,
   })
-  async remove(@Param('id') id: string) {
+  @UseGuards(AuthJwtGuard)
+  async remove(@Param('id') id: string, @CurrentUser() user: User) {
+    await this.commentService.findOneById;
     await this.commentService.remove(+id);
   }
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -16,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('post')
 @ApiTags('Posts')
@@ -30,6 +32,7 @@ export class PostController {
     description: 'Created',
     // type: ,
   })
+  @UseGuards(AuthJwtGuard)
   create(@Body() createPostDto: CreatePostDto) {
     return this.postService.create(createPostDto);
   }
@@ -60,6 +63,7 @@ export class PostController {
     status: 200,
     // type: ,
   })
+  @UseGuards(AuthJwtGuard)
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     return this.postService.update(id, updatePostDto);
   }
@@ -70,6 +74,7 @@ export class PostController {
     status: 204,
     // type: ,
   })
+  @UseGuards(AuthJwtGuard)
   async remove(@Param('id') id: string) {
     await this.postService.remove(id);
     return;
