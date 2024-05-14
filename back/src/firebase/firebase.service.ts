@@ -1,30 +1,57 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Inject, Injectable } from '@nestjs/common';
-import { FirebaseOptions } from 'firebase/app';
-
+import { Injectable } from '@nestjs/common';
+// eslint-disable-next-line prefer-const
+let serviceAccount = require('../../serviceAccountKey.json');
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
+import * as admin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { Auth, getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
+import * as functions from 'firebase-functions';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  getAuth,
 } from 'firebase/auth';
-import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
-import { getFirestore } from 'firebase-admin/firestore';
+import { FirebaseApp } from 'firebase/app';
+import firebaseConfig from 'src/config/firebase.config';
+
 @Injectable()
 export class FirebaseService {
-  private readonly app;
+  private readonly serviceApp: App;
+  private readonly firebase: FirebaseApp;
+  public readonly auth;
   constructor() {
-    console.log(functions.config().firebase);
-    if (!admin.apps.length) {
-      this.app = admin.initializeApp(functions.config().firebase);
+    // console.log(functions.config().firebase);
+    if (!admin?.apps?.length) {
+      this.serviceApp = admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: 'https://-default-.firebaseio.com',
+      });
+    } else {
+      this.serviceApp = admin.apps[0];
     }
-    this.app = admin.apps[0];
+    //TO-DO
+    // delete later
+    // {
+    //   apiKey: 'AIzaSyC0c7AuYqHsZWMjP1hsCtQg50UT_756JVE',
+    //   authDomain: 'twiter-like.firebaseapp.com',
+    //   projectId: 'twiter-like',
+    //   storageBucket: 'twiter-like.appspot.com',
+    //   messagingSenderId: '16937741345',
+    //   appId: '1:16937741345:web:c3a70e21058c3fdcdf4760',
+    // }
+    this.firebase = firebase.initializeApp({});
+
+    console.log(getAuth().createUser);
   }
   getApp() {
-    return this.app;
+    return this.serviceApp;
   }
-  getAuth() {
-    return getAuth(this.app);
+  getAuth(): Auth {
+    return getAuth(this.serviceApp);
   }
   getFirestore() {
     return getFirestore();
@@ -36,7 +63,8 @@ export class FirebaseService {
     email: string;
     password: string;
   }) {
-    return await createUserWithEmailAndPassword(getAuth(), email, password);
+    let auth: any;
+    return await createUserWithEmailAndPassword(auth, email, password);
   }
   async signInWithEmailAndPassword({
     email,
@@ -45,6 +73,7 @@ export class FirebaseService {
     email: string;
     password: string;
   }) {
-    return await signInWithEmailAndPassword(getAuth(), email, password);
+    return (await firebase.auth().signInWithEmailAndPassword(email, password))
+      .user;
   }
 }

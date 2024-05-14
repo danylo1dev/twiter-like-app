@@ -26,6 +26,22 @@ export class UserRepository {
       return doc.data();
     }
   }
+  async getOneByEmail(email: string) {
+    const doc = await this.userStore.get();
+    if (doc.empty) {
+      return [];
+    }
+    const result = [];
+    doc.forEach((doc) => {
+      result.push(doc.data());
+    });
+    return result;
+    // if (!doc.exists) {
+    //   console.log('No such document!');
+    // } else {
+    //   return doc.data();
+    // }
+  }
   async getMany() {
     const snapshot = await this.userStore.limit(10).get();
     if (snapshot.empty) {

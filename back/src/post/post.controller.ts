@@ -44,6 +44,7 @@ export class PostController {
     // type: ,
   })
   findAll() {
+    console.log('dsads');
     return this.postService.findAll();
   }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -9,6 +9,7 @@ import {
 } from '@nestjs/swagger';
 import { ResponseAuthDto } from './dto/response.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthLocalGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -32,10 +33,7 @@ export class AuthController {
     status: 200,
     description: 'Authorized',
   })
-  login(@Body() loginDto: LoginDto, @CurrentUser() user) {
-    return {
-      userId: user.id,
-      token: this.authService.getTokenForUser(user),
-    };
+  async login(@Body() loginDto: LoginDto) {
+    return await this.authService.signIn(loginDto);
   }
 }

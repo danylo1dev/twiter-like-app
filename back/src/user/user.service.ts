@@ -1,19 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
+import { CreateUser } from './create-user.interface';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
-  async create(user: any) {
-    const userProfile = {
-      uid: user.uid,
-      email: user.email,
-      name: user.name,
-      lastname: user.lastname,
-      role: 1,
-    };
-    await this.userRepository.create(userProfile);
-
-    return { isAuth: true, user: userProfile };
+  async create(user: CreateUser) {
+    return await this.userRepository.create(user);
+  }
+  async findOneByEmail(email: string) {
+    return await this.userRepository.getOneByEmail(email);
   }
 }

@@ -3,6 +3,7 @@ import { Firestore } from 'firebase-admin/firestore';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
 import { CreatePost } from './types/create-post.interface';
+import { findOptions } from './types/find-options.type';
 import { UpdatePost } from './types/update-post.interface';
 
 @Injectable()
@@ -19,16 +20,27 @@ export class PostRepository {
   async create(user: CreatePost) {
     return await this.postStore.add(user);
   }
-  async getOne(uid: string) {
-    const doc = await this.postStore.doc(uid).get();
+  async getOne(id: string) {
+    const doc = await this.postStore.doc(id).get();
     if (!doc.exists) {
       console.log('No such document!');
     } else {
       return doc.data();
     }
   }
-  async getMany() {
-    const snapshot = await this.postStore.limit(10).startAt(1).get();
+  async getMany(options?: findOptions) {
+    // let query: Query = this.postStore;
+    // if (options?.where) {
+    //   query = whereParser(options?.where, this.postStore);
+    // }
+    console.log('test');
+    const snapshot = await this.postStore
+      .orderBy('userId')
+      .limit(options?.pagination.limit || 10)
+      .startAt(options?.pagination.page || 10)
+
+      .get();
+    // const snapshot = await query.get();
     if (snapshot.empty) {
       return [];
     }
