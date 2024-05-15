@@ -18,7 +18,7 @@ export class UserRepository {
   async create(user: CreateUser) {
     return await this.userStore.doc(user.uid).set(user);
   }
-  async getOneByID(uid: string) {
+  async getOneById(uid: string) {
     const doc = await this.userStore.doc(uid).get();
     if (!doc.exists) {
       console.log('No such document!');
@@ -36,11 +36,6 @@ export class UserRepository {
       result.push(doc.data());
     });
     return result;
-    // if (!doc.exists) {
-    //   console.log('No such document!');
-    // } else {
-    //   return doc.data();
-    // }
   }
   async getMany() {
     const snapshot = await this.userStore.limit(10).get();

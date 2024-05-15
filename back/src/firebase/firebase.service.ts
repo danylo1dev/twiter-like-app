@@ -43,7 +43,14 @@ export class FirebaseService {
     //   messagingSenderId: '16937741345',
     //   appId: '1:16937741345:web:c3a70e21058c3fdcdf4760',
     // }
-    this.firebase = firebase.initializeApp({});
+    this.firebase = firebase.initializeApp({
+      apiKey: 'AIzaSyC0c7AuYqHsZWMjP1hsCtQg50UT_756JVE',
+      authDomain: 'twiter-like.firebaseapp.com',
+      projectId: 'twiter-like',
+      storageBucket: 'twiter-like.appspot.com',
+      messagingSenderId: '16937741345',
+      appId: '1:16937741345:web:c3a70e21058c3fdcdf4760',
+    });
 
     console.log(getAuth().createUser);
   }

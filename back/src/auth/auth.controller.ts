@@ -1,15 +1,22 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ResponseAuthDto } from './dto/response.dto';
+import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { AuthLocalGuard } from './guards/local-auth.guard';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
+import { ResponseAuthDto } from './dto/response.dto';
+import { AuthJwtGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -35,5 +42,15 @@ export class AuthController {
   })
   async login(@Body() loginDto: LoginDto) {
     return await this.authService.signIn(loginDto);
+  }
+  @Get('/me')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Profile',
+  })
+  @UseGuards(AuthJwtGuard)
+  async me(@CurrentUser() user) {
+    return user;
   }
 }

@@ -3,7 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { UserRepository } from 'src/user/user.repository';
-import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -12,6 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private readonly firebaseService: FirebaseService,
     private readonly userRepository: UserRepository,
   ) {
+    console.log(ExtractJwt.fromAuthHeaderAsBearerToken());
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -19,6 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
   public async validate(payload: any): Promise<any> {
-    return await this.userRepository.getOneByID(payload.sub);
+    console.log(payload);
+    return await this.userRepository.getOneById(payload.sub);
   }
 }

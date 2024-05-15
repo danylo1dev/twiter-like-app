@@ -54,13 +54,16 @@ export class AuthService {
   }
 
   async signIn(createAuthDto: LoginDto) {
-    console.log(1);
     const user = await this.firebaseService.signInWithEmailAndPassword(
       createAuthDto,
     );
-    return {
-      userId: user.uid,
-      token: this.getTokenForUser(user),
+    const userRecord = await this.userService.findOneById(user.uid);
+    const userProfile: CreateUser = {
+      uid: user.uid,
+      email: user.email,
+      firstName: userRecord.firstName,
+      lastName: userRecord.lastName,
     };
+    return userProfile;
   }
 }

@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UserService } from 'src/user/user.service';
+import { JwtModule } from '@nestjs/jwt';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { UserRepository } from 'src/user/user.repository';
-import { JwtModule } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 import authJwtConfig from '../config/jwt.config';
-import { LocalStrategy } from './strategies/local.strategy';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { AuthJwtGuard } from './guards/jwt-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { AuthLocalGuard } from './guards/local-auth.guard';
 
 @Module({
@@ -22,8 +23,10 @@ import { AuthLocalGuard } from './guards/local-auth.guard';
     UserService,
     FirebaseService,
     UserRepository,
-    LocalStrategy,
     JwtStrategy,
+    LocalStrategy,
+    AuthLocalGuard,
+    AuthJwtGuard,
   ],
 })
 export class AuthModule {}

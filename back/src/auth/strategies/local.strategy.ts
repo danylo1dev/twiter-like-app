@@ -22,17 +22,16 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     super();
   }
   async validate(email: string, password: string): Promise<any> {
+    console.log(email);
     // const { user } = await this.firebaseService.signInWithEmailAndPassword({
     //   email,
     //   password,
     // });
-    throw new NotFoundException();
-    console.log(email);
-    await this.authService.signIn({ email, password });
-    // if (!user) {
-    //   this.logger.debug(`Invalid credentionals for user`);
-    //   throw new UnauthorizedException();
-    // }
-    return true;
+    const user = await this.authService.signIn({ email, password });
+    if (!user) {
+      this.logger.debug(`Invalid credentionals for user`);
+      throw new UnauthorizedException();
+    }
+    return user;
   }
 }
