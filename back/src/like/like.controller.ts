@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { CreateLikeDto } from './dto/create-like.dto';
@@ -18,6 +19,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'firebase/auth';
 
 @Controller('like')
 @ApiTags('like')
@@ -30,53 +33,33 @@ export class LikeController {
   @ApiResponse({
     status: 201,
     description: 'Created',
-    // type: ,
   })
   @UseGuards(AuthJwtGuard)
-  create(@Body() createLikeDto: CreateLikeDto) {
-    return this.likeService.create(createLikeDto);
+  create(@Body() createPostDto: CreateLikeDto, @CurrentUser() user) {
+    return this.likeService.create({ ...createPostDto, userId: user.uid });
   }
 
-  @Get(':postId')
+  @Get('/countLikesOnPost')
   @HttpCode(200)
   @ApiResponse({
     status: 200,
-    // type: ,
   })
-  findAll(@Param('postId') postId: string) {
-    return this.likeService.findLikeForPost(postId);
-  }
-
-  @Get(':id')
-  @HttpCode(200)
-  @ApiResponse({
-    status: 200,
-    // type: ,
-  })
-  findOne(@Param('id') id: string) {
-    return this.likeService.findOne(id);
-  }
-
-  @Patch(':id')
-  @HttpCode(200)
-  @ApiResponse({
-    status: 200,
-    // type: ,
-  })
-  @UseGuards(AuthJwtGuard)
-  update(@Param('id') id: string, @Body() updateLikeDto: UpdateLikeDto) {
-    return this.likeService.update(id, updateLikeDto);
+  likeForPost(@Query('postId') postId: string) {
+    this.likeService.countLikeOnPost(postId);
   }
 
   @Delete(':id')
-  @HttpCode(200)
+  @HttpCode(204)
   @ApiResponse({
     status: 204,
-    // type: ,
   })
   @UseGuards(AuthJwtGuard)
-  async remove(@Param('id') id: string) {
-    await this.likeService.remove(id);
-    return;
+  async remove(@Param('id') id: string, @CurrentUser() user: User) {
+    try {
+      await this.likeService.remove(id, user.uid);
+      return id;
+    } catch (err) {
+      throw err;
+    }
   }
 }

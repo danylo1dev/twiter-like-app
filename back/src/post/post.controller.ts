@@ -1,28 +1,27 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpCode,
-  UseGuards,
+  Param,
+  Patch,
+  Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { PostService } from './post.service';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
 import {
   ApiInternalServerErrorResponse,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { FindOptionsDto } from './dto/find-options.dto';
-import { user } from 'firebase-functions/v1/auth';
 import { User } from 'firebase/auth';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreatePostDto } from './dto/create-post.dto';
+import { FindOptionsDto } from './dto/find-options.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { PostService } from './post.service';
 
 @Controller('post')
 @ApiTags('Posts')

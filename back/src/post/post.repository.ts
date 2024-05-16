@@ -2,11 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Firestore } from 'firebase-admin/firestore';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
+import { whereParser } from 'src/shared/whereParser';
 import { CreatePost } from './types/create-post.interface';
 import { findOptions } from './types/find-options.type';
 import { UpdatePost } from './types/update-post.interface';
-import { whereParser } from 'src/shared/whereParser';
-import { Query } from 'firebase-admin/database';
 
 @Injectable()
 export class PostRepository {

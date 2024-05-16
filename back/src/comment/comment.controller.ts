@@ -9,18 +9,17 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
 import {
   ApiInternalServerErrorResponse,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'firebase/auth';
-import { use } from 'passport';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CommentService } from './comment.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Controller('comment')
 @ApiTags('Comments')

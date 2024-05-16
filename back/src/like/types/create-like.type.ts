@@ -4,5 +4,6 @@ export enum LikeGrade {
 }
 export class CreateLike {
   postId: string;
+  userId: string;
   grate: LikeGrade;
 }

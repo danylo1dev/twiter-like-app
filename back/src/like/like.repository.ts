@@ -27,9 +27,9 @@ export class LikeRepository {
       return doc.data();
     }
   }
-  async getLikeForPost(where: { postId: string }) {
+  async getLikeForPost(postId): Promise<any[]> {
     const snapshot = await this.commentStore
-      .where('postId', '==', where.postId)
+      .where('postId', '==', postId)
       .limit(10)
       .startAt(1)
       .get();
