@@ -2,16 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './post.repository';
+import { CreatePost } from './types/create-post.interface';
+import { UpdatePost } from './types/update-post.interface';
+import { findOptions } from './types/find-options.type';
 
 @Injectable()
 export class PostService {
   constructor(private readonly postRepository: PostRepository) {}
-  async create(createPostDto: CreatePostDto) {
+  async create(createPostDto: CreatePost) {
     return await this.postRepository.create(createPostDto);
   }
 
-  async findAll() {
-    return await this.postRepository.getMany();
+  async findAll(options?: findOptions) {
+    return await this.postRepository.getMany(options);
   }
 
   async findOne(id: string) {

@@ -22,7 +22,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     super();
   }
   async validate(email: string, password: string): Promise<any> {
-    console.log(email);
     // const { user } = await this.firebaseService.signInWithEmailAndPassword({
     //   email,
     //   password,

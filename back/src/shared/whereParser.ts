@@ -6,7 +6,7 @@ export function whereParser(
 ) {
   const whereKeys = Object.keys(where);
   let query: Query = store;
-  if (whereKeys.length === 0) {
+  if (whereKeys.length > 0) {
     whereKeys.forEach((value) => {
       query = query.where(value, '==', where[value]);
     });

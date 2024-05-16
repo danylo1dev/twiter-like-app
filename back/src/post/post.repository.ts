@@ -5,6 +5,8 @@ import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
 import { CreatePost } from './types/create-post.interface';
 import { findOptions } from './types/find-options.type';
 import { UpdatePost } from './types/update-post.interface';
+import { whereParser } from 'src/shared/whereParser';
+import { Query } from 'firebase-admin/database';
 
 @Injectable()
 export class PostRepository {
@@ -17,8 +19,9 @@ export class PostRepository {
     this.firestore = firebaseService.getFirestore();
     this.postStore = this.firestore.collection('posts');
   }
-  async create(user: CreatePost) {
-    return await this.postStore.add(user);
+  async create(post: CreatePost) {
+    const newPost = await this.postStore.add(post);
+    return newPost.path.split('/')[1];
   }
   async getOne(id: string) {
     const doc = await this.postStore.doc(id).get();
@@ -29,28 +32,27 @@ export class PostRepository {
     }
   }
   async getMany(options?: findOptions) {
-    // let query: Query = this.postStore;
-    // if (options?.where) {
-    //   query = whereParser(options?.where, this.postStore);
-    // }
     console.log('test');
-    const snapshot = await this.postStore
+    let query: FirebaseFirestore.Query = this.postStore;
+    if (Object.keys(options?.where).length > 0) {
+      query = whereParser(options.where, this.postStore);
+    }
+
+    const snapshot = await query
       .orderBy('userId')
       .limit(options?.pagination.limit || 10)
       .startAt(options?.pagination.page || 10)
-
       .get();
-    // const snapshot = await query.get();
     if (snapshot.empty) {
       return [];
     }
     const result = mapArrayFromSnaphot(snapshot);
     return result;
   }
-  async update(id: string, user: UpdatePost) {
+  async update(id: string, post: UpdatePost) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: Unreachable code error
-    return await this.postStore.doc(id).update(user);
+    return await this.postStore.doc(id).update(post);
   }
   async delete(id: string) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

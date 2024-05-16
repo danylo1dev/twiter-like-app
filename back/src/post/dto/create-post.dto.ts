@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CreatePost } from '../types/create-post.interface';
+import { OmitType } from '@nestjs/mapped-types';
 
-export class CreatePostDto implements CreatePost {
+export class CreatePostDto extends OmitType(CreatePost, ['userId']) {
   @ApiProperty({
     example: 'Post title',
     type: String,
@@ -12,9 +13,9 @@ export class CreatePostDto implements CreatePost {
     type: String,
   })
   text: string;
-  @ApiProperty({
-    example: 'uid123adc',
-    type: String,
-  })
-  userId: string;
+  // @ApiProperty({
+  //   example: 'uid123adc',
+  //   type: String,
+  // })
+  // userId: string;
 }

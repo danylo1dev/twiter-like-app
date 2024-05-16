@@ -1,12 +1,11 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Auth } from 'firebase-admin/auth';
-import { User } from 'firebase/auth';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { CreateUser } from 'src/user/create-user.interface';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { CreateUser } from 'src/user/create-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +26,6 @@ export class AuthService {
       const exUser = await this.firebaseService
         .getAuth()
         .getUserByEmail(createAuthDto.email);
-      console.log(exUser);
       if (exUser) {
         throw new ForbiddenException(
           `User with ${createAuthDto.email} alredy exist`,

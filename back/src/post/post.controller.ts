@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -18,6 +19,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { FindOptionsDto } from './dto/find-options.dto';
 
 @Controller('post')
 @ApiTags('Posts')
@@ -30,29 +33,29 @@ export class PostController {
   @ApiResponse({
     status: 201,
     description: 'Created',
-    // type: ,
   })
   @UseGuards(AuthJwtGuard)
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  create(@Body() createPostDto: CreatePostDto, @CurrentUser() user) {
+    return this.postService.create({ ...createPostDto, userId: user.uid });
   }
 
   @Get()
   @HttpCode(200)
   @ApiResponse({
     status: 200,
-    // type: ,
   })
-  findAll() {
-    console.log('dsads');
-    return this.postService.findAll();
+  findAll(@Query() query: FindOptionsDto) {
+    const { page, limit, ...where } = query;
+    return this.postService.findAll({
+      pagination: { page: page, limit: limit },
+      where,
+    });
   }
 
   @Get(':id')
   @HttpCode(200)
   @ApiResponse({
     status: 200,
-    // type: ,
   })
   findOne(@Param('id') id: string) {
     return this.postService.findOne(id);
@@ -62,22 +65,21 @@ export class PostController {
   @HttpCode(200)
   @ApiResponse({
     status: 200,
-    // type: ,
   })
   @UseGuards(AuthJwtGuard)
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(id, updatePostDto);
+  async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+    await this.postService.update(id, updatePostDto);
+    return id;
   }
 
   @Delete(':id')
   @HttpCode(204)
   @ApiResponse({
     status: 204,
-    // type: ,
   })
   @UseGuards(AuthJwtGuard)
   async remove(@Param('id') id: string) {
     await this.postService.remove(id);
-    return;
+    return id;
   }
 }

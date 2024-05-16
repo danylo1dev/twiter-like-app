@@ -1,22 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
-// eslint-disable-next-line prefer-const
-let serviceAccount = require('../../serviceAccountKey.json');
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
 import * as admin from 'firebase-admin';
 import { App } from 'firebase-admin/app';
 import { Auth, getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
-import * as functions from 'firebase-functions';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
 import { FirebaseApp } from 'firebase/app';
-import firebaseConfig from 'src/config/firebase.config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
+// eslint-disable-next-line prefer-const
+let serviceAccount = require('../../serviceAccountKey.json');
 
 @Injectable()
 export class FirebaseService {
@@ -24,7 +19,6 @@ export class FirebaseService {
   private readonly firebase: FirebaseApp;
   public readonly auth;
   constructor() {
-    // console.log(functions.config().firebase);
     if (!admin?.apps?.length) {
       this.serviceApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
@@ -51,8 +45,6 @@ export class FirebaseService {
       messagingSenderId: '16937741345',
       appId: '1:16937741345:web:c3a70e21058c3fdcdf4760',
     });
-
-    console.log(getAuth().createUser);
   }
   getApp() {
     return this.serviceApp;

@@ -11,7 +11,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private readonly firebaseService: FirebaseService,
     private readonly userRepository: UserRepository,
   ) {
-    console.log(ExtractJwt.fromAuthHeaderAsBearerToken());
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -19,7 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
   public async validate(payload: any): Promise<any> {
-    console.log(payload);
     return await this.userRepository.getOneById(payload.sub);
   }
 }
