@@ -20,6 +20,7 @@ import {
 import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'firebase/auth';
+import { use } from 'passport';
 
 @Controller('comment')
 @ApiTags('Comments')
@@ -34,8 +35,11 @@ export class CommentController {
     description: 'Created',
   })
   @UseGuards(AuthJwtGuard)
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  create(@Body() createCommentDto: CreateCommentDto, @CurrentUser() user) {
+    return this.commentService.create({
+      ...createCommentDto,
+      userId: user.uid,
+    });
   }
 
   @Get()
@@ -54,7 +58,7 @@ export class CommentController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.commentService.findOneById(+id);
+    return this.commentService.findOneById(id);
   }
 
   @HttpCode(200)
@@ -64,8 +68,12 @@ export class CommentController {
   })
   @Patch(':id')
   @UseGuards(AuthJwtGuard)
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.commentService.update(id, updateCommentDto, user.uid);
   }
 
   @Delete(':id')
@@ -76,7 +84,6 @@ export class CommentController {
   })
   @UseGuards(AuthJwtGuard)
   async remove(@Param('id') id: string, @CurrentUser() user: User) {
-    await this.commentService.findOneById;
-    await this.commentService.remove(+id);
+    await this.commentService.remove(id, user.uid);
   }
 }

@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CommentRepository } from './comment.repository';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { CreateComment } from './types/create-comment';
+import { PostService } from 'src/post/post.service';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(
+    private readonly commentRepository: CommentRepository,
+    private readonly postService: PostService,
+  ) {}
+  async create(createComment: CreateComment) {
+    try {
+      const exPost = await this.postService.findOne(createComment.postId);
+      if (!exPost) {
+        throw new NotFoundException(
+          `Post with id ${createComment.postId} not found`,
+        );
+      }
+
+      return await this.commentRepository.create(createComment);
+    } catch (err) {
+      return err;
+    }
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  async findAll() {
+    return await this.commentRepository.getMany();
   }
 
-  findOneById(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOneById(id: string) {
+    return await this.commentRepository.getOne(id);
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async update(id: string, updateCommentDto: UpdateCommentDto, userId: string) {
+    const comment = await this.findOneById(id);
+    if (!(comment.userId === userId)) {
+      throw new ForbiddenException();
+    }
+    return await this.commentRepository.update(id, updateCommentDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: string, userId: string) {
+    try {
+      const exComment = await this.findOneById(id);
+
+      if (!exComment) {
+        throw new NotFoundException(`comment with ${id} not found `);
+      }
+      if (!(exComment.userId === userId)) {
+        throw new ForbiddenException();
+      }
+      return await this.commentRepository.delete(id);
+    } catch (err) {
+      return err;
+    }
   }
 }

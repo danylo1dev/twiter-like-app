@@ -32,16 +32,17 @@ export class PostRepository {
     }
   }
   async getMany(options?: findOptions) {
-    console.log('test');
     let query: FirebaseFirestore.Query = this.postStore;
-    if (Object.keys(options?.where).length > 0) {
-      query = whereParser(options.where, this.postStore);
+    if (options) {
+      if (Object.keys(options?.where).length > 0) {
+        query = whereParser(options.where, this.postStore);
+      }
     }
 
     const snapshot = await query
       .orderBy('userId')
-      .limit(options?.pagination.limit || 10)
-      .startAt(options?.pagination.page || 10)
+      .limit(options?.pagination?.limit || 10)
+      .startAt(options?.pagination?.page || 10)
       .get();
     if (snapshot.empty) {
       return [];

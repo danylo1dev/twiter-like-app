@@ -21,6 +21,8 @@ import {
 import { AuthJwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { FindOptionsDto } from './dto/find-options.dto';
+import { user } from 'firebase-functions/v1/auth';
+import { User } from 'firebase/auth';
 
 @Controller('post')
 @ApiTags('Posts')
@@ -67,8 +69,12 @@ export class PostController {
     status: 200,
   })
   @UseGuards(AuthJwtGuard)
-  async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    await this.postService.update(id, updatePostDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+    @CurrentUser() user: User,
+  ) {
+    await this.postService.update(id, updatePostDto, user.uid);
     return id;
   }
 
@@ -78,8 +84,8 @@ export class PostController {
     status: 204,
   })
   @UseGuards(AuthJwtGuard)
-  async remove(@Param('id') id: string) {
-    await this.postService.remove(id);
+  async remove(@Param('id') id: string, @CurrentUser() user: User) {
+    await this.postService.remove(id, user.uid);
     return id;
   }
 }

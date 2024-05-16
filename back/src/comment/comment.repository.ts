@@ -5,6 +5,11 @@ import { CreateComment } from './types/create-comment';
 import { UpdateComment } from './types/update-comment';
 import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
 import { UpdatePost } from 'src/post/types/update-post.interface';
+import {
+  CommentWhere,
+  CommentFindOptions,
+} from './types/find-comment-options.type';
+import { whereParser } from 'src/shared/whereParser';
 
 @Injectable()
 export class CommentRepository {
@@ -18,7 +23,15 @@ export class CommentRepository {
     this.commentStore = this.firestore.collection('comments');
   }
   async create(comment: CreateComment) {
-    return await this.commentStore.add(comment);
+    try {
+      console.log('test');
+      const newComment = await this.commentStore.add(comment);
+      console.log('test');
+      console.log(newComment);
+      return newComment.path.split('/')[1];
+    } catch (err) {
+      console.log(err);
+    }
   }
   async getOne(id: string) {
     const doc = await this.commentStore.doc(id).get();
@@ -28,8 +41,21 @@ export class CommentRepository {
       return doc.data();
     }
   }
-  async getMany() {
-    const snapshot = await this.commentStore.limit(10).startAt(1).get();
+  async getMany(options?: CommentFindOptions) {
+    console.log('test');
+    let query: FirebaseFirestore.Query = this.commentStore;
+    if (options) {
+      if (Object.keys(options?.where).length > 0) {
+        query = whereParser(options.where, this.commentStore);
+      }
+    }
+
+    const snapshot = await query
+      .orderBy('postId')
+      .limit(options?.pagination?.limit || 10)
+      .startAt(options?.pagination?.page || 1)
+      .get();
+
     if (snapshot.empty) {
       return [];
     }

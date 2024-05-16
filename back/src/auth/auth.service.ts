@@ -62,6 +62,9 @@ export class AuthService {
       firstName: userRecord.firstName,
       lastName: userRecord.lastName,
     };
-    return userProfile;
+    return {
+      userId: user.uid,
+      token: this.getTokenForUser(userProfile),
+    };
   }
 }
