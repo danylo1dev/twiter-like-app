@@ -22,7 +22,7 @@ export class LikeRepository {
   async getOne(id: string) {
     const doc = await this.commentStore.doc(id).get();
     if (!doc.exists) {
-      console.log('No such document!');
+      return null;
     } else {
       return doc.data();
     }

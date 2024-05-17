@@ -34,13 +34,17 @@ export class LikeService {
   }
 
   async remove(id: string, userId: string) {
-    const exPost = await this.findOne(id);
-    if (!exPost) {
-      throw new NotFoundException(`Post with id ${id} not found`);
+    try {
+      const exComment = await this.findOne(id);
+      if (!exComment) {
+        throw new NotFoundException(`Comment with id ${id} not found`);
+      }
+      if (exComment.userId !== userId) {
+        throw new ForbiddenException();
+      }
+      return await this.likeRepository.delete(id);
+    } catch (err) {
+      throw err;
     }
-    if (exPost.userId !== userId) {
-      throw new ForbiddenException();
-    }
-    return await this.likeRepository.delete(id);
   }
 }
