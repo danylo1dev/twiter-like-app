@@ -19,7 +19,11 @@ export class PostRepository {
     this.postStore = this.firestore.collection('posts');
   }
   async create(post: CreatePost) {
-    const newPost = await this.postStore.add(post);
+    const newPost = await this.postStore.add({
+      ...post,
+      createdAt: this.firebaseService.getTimestamp().now(),
+      updatedAt: this.firebaseService.getTimestamp().now(),
+    });
     return newPost.path.split('/')[1];
   }
   async getOne(id: string) {
@@ -52,7 +56,10 @@ export class PostRepository {
   async update(id: string, post: UpdatePost) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: Unreachable code error
-    return await this.postStore.doc(id).update(post);
+    return await this.postStore.doc(id).update({
+      ...post,
+      updatedAt: this.firebaseService.getTimestamp().now(),
+    });
   }
   async delete(id: string) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

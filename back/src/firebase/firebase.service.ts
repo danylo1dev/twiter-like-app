@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { App } from 'firebase-admin/app';
 import { Auth, getAuth } from 'firebase-admin/auth';
-import { getFirestore } from 'firebase-admin/firestore';
+import { Timestamp, getFirestore } from 'firebase-admin/firestore';
 import { FirebaseApp } from 'firebase/app';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
@@ -29,14 +29,6 @@ export class FirebaseService {
     }
     //TO-DO
     // delete later
-    // {
-    //   apiKey: 'AIzaSyC0c7AuYqHsZWMjP1hsCtQg50UT_756JVE',
-    //   authDomain: 'twiter-like.firebaseapp.com',
-    //   projectId: 'twiter-like',
-    //   storageBucket: 'twiter-like.appspot.com',
-    //   messagingSenderId: '16937741345',
-    //   appId: '1:16937741345:web:c3a70e21058c3fdcdf4760',
-    // }
     this.firebase = firebase.initializeApp({
       apiKey: 'AIzaSyC0c7AuYqHsZWMjP1hsCtQg50UT_756JVE',
       authDomain: 'twiter-like.firebaseapp.com',
@@ -74,5 +66,9 @@ export class FirebaseService {
   }) {
     return (await firebase.auth().signInWithEmailAndPassword(email, password))
       .user;
+  }
+  getTimestamp() {
+    const { Timestamp } = firebase.firestore;
+    return Timestamp;
   }
 }

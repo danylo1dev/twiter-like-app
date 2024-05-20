@@ -37,7 +37,11 @@ export class PostController {
   })
   @UseGuards(AuthJwtGuard)
   create(@Body() createPostDto: CreatePostDto, @CurrentUser() user) {
-    return this.postService.create({ ...createPostDto, userId: user.uid });
+    return this.postService.create({
+      ...createPostDto,
+      userId: user.uid,
+      username: `${user.firstName} ${user.lastName}`,
+    });
   }
 
   @Get()
