@@ -43,7 +43,7 @@ export class PostRepository {
     }
 
     const snapshot = await query
-      .orderBy('createdAt')
+      .orderBy('createdAt', 'asc')
       .limit(options?.pagination?.limit || 10)
       .startAt(options?.pagination?.page || 10)
       .get();
