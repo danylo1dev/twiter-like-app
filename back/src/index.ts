@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as express from 'express';
 import * as functions from 'firebase-functions';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 const server = express();
 
@@ -18,6 +19,7 @@ export const createNestServer = async (expressInstance) => {
     .setVersion('1.0')
     .addTag('Twiter')
     .build();
+  app.useGlobalPipes(new ValidationPipe());
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);
 

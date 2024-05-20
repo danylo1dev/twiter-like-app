@@ -33,6 +33,7 @@ export class PostService {
 
   async remove(id: string, userId: string) {
     try {
+      console.log(id);
       const exPost = await this.findOne(id);
       if (!exPost) {
         throw new NotFoundException(`Post with id ${id} not found`);
@@ -42,7 +43,7 @@ export class PostService {
       }
       return await this.postRepository.delete(id);
     } catch (err) {
-      return err;
+      throw err;
     }
   }
 }

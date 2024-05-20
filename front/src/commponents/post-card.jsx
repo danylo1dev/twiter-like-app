@@ -10,9 +10,9 @@ export const PostCard = ({ userId, username, text, createAt }) => {
           gap: "16px",
         }}
       >
-        <Profile avatarSrc={""} fullName={username} userId />
+        <Profile avatarSrc={""} fullName={username} userId={userId} />
         <Typography>{text}</Typography>
-        <Typography variant="body2">{createAt}</Typography>
+        <Typography variant="body2">Posted: {createAt}</Typography>
       </CardContent>
     </Card>
   );

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Firestore } from 'firebase-admin/firestore';
+import { Firestore, Timestamp } from 'firebase-admin/firestore';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
 import { whereParser } from 'src/shared/whereParser';
@@ -21,8 +21,8 @@ export class PostRepository {
   async create(post: CreatePost) {
     const newPost = await this.postStore.add({
       ...post,
-      createdAt: this.firebaseService.getTimestamp().now(),
-      updatedAt: this.firebaseService.getTimestamp().now(),
+      createdAt: Timestamp.fromDate(new Date()),
+      updatedAt: Timestamp.fromDate(new Date()),
     });
     return newPost.path.split('/')[1];
   }
@@ -43,7 +43,7 @@ export class PostRepository {
     }
 
     const snapshot = await query
-      .orderBy('userId')
+      .orderBy('createdAt')
       .limit(options?.pagination?.limit || 10)
       .startAt(options?.pagination?.page || 10)
       .get();
@@ -58,7 +58,7 @@ export class PostRepository {
     // @ts-ignore: Unreachable code error
     return await this.postStore.doc(id).update({
       ...post,
-      updatedAt: this.firebaseService.getTimestamp().now(),
+      updatedAt: Timestamp.fromDate(new Date()),
     });
   }
   async delete(id: string) {

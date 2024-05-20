@@ -15,8 +15,20 @@ export const CardList = ({ posts = [] }) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       {data.length &&
-        data.map(({ id, text, updatedAt }) => {
-          return <PostCard key={id} text={text} createAt={updatedAt} />;
+        data.map(({ id, username, text, createdAt }) => {
+          const date = new Date(createdAt._seconds * 1000);
+          const month =
+            (date.getMonth() + 1).length > 1
+              ? date.getMonth() + 1
+              : `0${date.getMonth() + 1}`;
+          return (
+            <PostCard
+              key={id}
+              text={text}
+              username={username}
+              createAt={`${date.getDate()}.${month}.${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}`}
+            />
+          );
         })}
     </Box>
   );
