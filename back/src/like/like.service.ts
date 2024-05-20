@@ -3,11 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateLikeDto } from './dto/update-like.dto';
+import { PostService } from 'src/post/post.service';
 import { LikeRepository } from './like.repository';
 import { CreateLike } from './types/create-like.type';
-import { UserService } from 'src/user/user.service';
-import { PostService } from 'src/post/post.service';
 
 @Injectable()
 export class LikeService {
