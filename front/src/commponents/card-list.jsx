@@ -11,11 +11,10 @@ export const CardList = ({ posts = [] }) => {
   useEffect(() => {
     getPosts();
   }, []);
-  console.log(data);
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       {data.length &&
-        data.map(({ id, username, text, createdAt }) => {
+        data.map(({ id, username, text, createdAt, userId }) => {
           const date = new Date(createdAt._seconds * 1000);
           const month =
             (date.getMonth() + 1).length > 1
@@ -26,6 +25,7 @@ export const CardList = ({ posts = [] }) => {
               key={id}
               text={text}
               username={username}
+              userId={userId}
               createAt={`${date.getDate()}.${month}.${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}`}
             />
           );

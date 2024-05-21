@@ -29,7 +29,7 @@ export const AuthPage = () => {
           }}
           variant="contained"
         >
-          Move to {isLogin ? "Login" : "Registration"}
+          Move to {isLogin ? "Registration" : "Login"}
         </Button>
         {isLogin ? <LoginForm /> : <RegistrationForm />}
       </Box>

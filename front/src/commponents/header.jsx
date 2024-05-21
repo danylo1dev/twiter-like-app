@@ -1,8 +1,28 @@
 import { Box, Container, Typography, useTheme } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 import { Profile } from "./profile";
+import { useEffect, useState } from "react";
+import { authApi } from "../axios";
 export const Header = () => {
   const theme = useTheme();
-  console.log(theme.palette.primary);
+  const [userId, setUserId] = useState("");
+  const [profile, setProfile] = useState();
+  const getMe = async () => {
+    const res = await authApi.getProfile(userId);
+    setProfile(res.data);
+    console.log(res.data);
+  };
+  useEffect(() => {
+    const storedToken = sessionStorage.getItem("jwt_token");
+    const decoded = jwtDecode(storedToken);
+    setUserId(decoded.sub);
+  }, []);
+  useEffect(() => {
+    if (userId) {
+      getMe();
+    }
+  }, [userId]);
+
   return (
     <Box
       component={"header"}
@@ -20,7 +40,12 @@ export const Header = () => {
       >
         <Typography variant="h4">Twiter</Typography>
         <Box>
-          <Profile avatarSrc={""} fullName={"Cool Dude"} userId={"dkaskdks"} />
+          <Profile
+            fullName={
+              profile ? profile.firstName + " " + profile.lastName : "Loading"
+            }
+            userId={userId}
+          />
         </Box>
       </Container>
     </Box>

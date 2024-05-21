@@ -19,9 +19,7 @@ export const Profile = ({ avatarSrc, fullName, userId }) => {
               cursor: "pointer",
             },
           }}
-          onClick={() => {
-            console.log("asdasd");
-          }}
+          onClick={() => {}}
         />
       </Link>
       <Link to={userId}>
@@ -32,9 +30,7 @@ export const Profile = ({ avatarSrc, fullName, userId }) => {
               textDecoration: "underline",
             },
           }}
-          onClick={() => {
-            console.log("asdasd");
-          }}
+          onClick={() => {}}
         >
           {fullName}
         </Typography>
