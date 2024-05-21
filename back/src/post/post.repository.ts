@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Firestore, Timestamp } from 'firebase-admin/firestore';
+import {
+  CollectionReference,
+  Firestore,
+  Timestamp,
+} from 'firebase-admin/firestore';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
 import { whereParser } from 'src/shared/whereParser';
@@ -35,17 +39,16 @@ export class PostRepository {
     }
   }
   async getMany(options?: findOptions) {
-    let query: FirebaseFirestore.Query = this.postStore;
+    let query: FirebaseFirestore.Query | CollectionReference = this.postStore;
     if (options) {
       if (Object.keys(options?.where).length > 0) {
         query = whereParser(options.where, this.postStore);
       }
     }
-
     const snapshot = await query
-      .orderBy('createdAt', 'asc')
+      .orderBy('createdAt', 'desc')
       .limit(options?.pagination?.limit || 10)
-      .startAt(options?.pagination?.page || 10)
+      .endAt(options?.pagination?.page * options?.pagination?.limit || 10)
       .get();
     if (snapshot.empty) {
       return [];
