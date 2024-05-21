@@ -33,7 +33,6 @@ export class PostService {
 
   async remove(id: string, userId: string) {
     try {
-      console.log(id);
       const exPost = await this.findOne(id);
       if (!exPost) {
         throw new NotFoundException(`Post with id ${id} not found`);
