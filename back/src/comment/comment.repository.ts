@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Firestore } from 'firebase-admin/firestore';
+import { Firestore, Timestamp } from 'firebase-admin/firestore';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { CreateComment } from './types/create-comment';
 import { UpdateComment } from './types/update-comment';
@@ -25,7 +25,11 @@ export class CommentRepository {
   async create(comment: CreateComment) {
     try {
       console.log('test');
-      const newComment = await this.commentStore.add(comment);
+      const newComment = await this.commentStore.add({
+        ...comment,
+        createdAt: Timestamp.fromDate(new Date()),
+        updatedAt: Timestamp.fromDate(new Date()),
+      });
       console.log('test');
       console.log(newComment);
       return newComment.path.split('/')[1];
@@ -42,7 +46,6 @@ export class CommentRepository {
     }
   }
   async getMany(options?: CommentFindOptions) {
-    console.log('test');
     let query: FirebaseFirestore.Query = this.commentStore;
     if (options) {
       if (Object.keys(options?.where).length > 0) {
@@ -51,9 +54,9 @@ export class CommentRepository {
     }
 
     const snapshot = await query
-      .orderBy('postId')
+      .orderBy('createdAt', 'desc')
       .limit(options?.pagination?.limit || 10)
-      .startAt(options?.pagination?.page || 1)
+      .endAt(options?.pagination?.page * options?.pagination?.limit || 10)
       .get();
 
     if (snapshot.empty) {

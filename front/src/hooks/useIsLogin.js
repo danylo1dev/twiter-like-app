@@ -6,7 +6,7 @@ export const useIsLogin = () => {
   useEffect(() => {
     const storedToken = sessionStorage.getItem("jwt_token");
     if (storedToken) {
-      navigate("dashboard");
+      navigate("feed");
     } else {
       navigate("/");
     }

@@ -1,8 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import { DashboardPage } from "./pages/dashboard";
+import { FeedPage } from "./pages/feed";
 import { HomePage } from "./pages/home";
 import { Layout } from "./pages/layout";
 import { AuthPage } from "./pages/auth";
+import { PostPage } from "./pages/post";
 
 export const router = createBrowserRouter([
   {
@@ -16,13 +17,17 @@ export const router = createBrowserRouter([
     errorElement: <div>console.error();</div>,
   },
   {
-    path: "/dashboard",
+    path: "/feed",
     element: <Layout />,
     errorElement: <div>console.error();</div>,
     children: [
       {
-        path: "/dashboard",
-        element: <DashboardPage />,
+        path: "/feed/",
+        element: <FeedPage />,
+      },
+      {
+        path: "/feed/post/:postId",
+        element: <PostPage />,
       },
     ],
   },

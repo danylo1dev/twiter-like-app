@@ -38,6 +38,7 @@ export class CommentController {
     return this.commentService.create({
       ...createCommentDto,
       userId: user.uid,
+      username: `${user.firstName} ${user.lastName}`,
     });
   }
 
