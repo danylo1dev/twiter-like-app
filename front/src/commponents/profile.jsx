@@ -1,6 +1,8 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export const Profile = ({ avatarSrc, fullName, userId }) => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -10,31 +12,31 @@ export const Profile = ({ avatarSrc, fullName, userId }) => {
         gap: "16px",
       }}
     >
-      <Link to={userId}>
-        <Avatar
-          alt="Remy Sharp"
-          src={avatarSrc}
-          sx={{
-            ":hover": {
-              cursor: "pointer",
-            },
-          }}
-          onClick={() => {}}
-        />
-      </Link>
-      <Link to={userId}>
-        <Typography
-          sx={{
-            ":hover": {
-              cursor: "pointer",
-              textDecoration: "underline",
-            },
-          }}
-          onClick={() => {}}
-        >
-          {fullName}
-        </Typography>
-      </Link>
+      <Avatar
+        onClick={() => {
+          navigate("/user/" + userId);
+        }}
+        alt="Remy Sharp"
+        src={avatarSrc}
+        sx={{
+          ":hover": {
+            cursor: "pointer",
+          },
+        }}
+      />
+      <Typography
+        sx={{
+          ":hover": {
+            cursor: "pointer",
+            textDecoration: "underline",
+          },
+        }}
+        onClick={() => {
+          navigate("/user/" + userId);
+        }}
+      >
+        {fullName}
+      </Typography>
     </Box>
   );
 };

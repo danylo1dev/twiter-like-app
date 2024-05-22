@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { commentApi, postApi } from "../axios";
+import { useParams } from "react-router-dom";
+import { commentApi } from "../axios";
 import { convertDateFromSecondsToString } from "../utils/convertDate";
 import { CardList } from "./card-list";
 import { PostCard } from "./post-card";
-import { useSearchParams, useParams } from "react-router-dom";
-export const CommentList = ({ posts = [] }) => {
+export const CommentList = ({ ...args }) => {
   const [data, setData] = useState([]);
   const { postId } = useParams();
   const getComments = async () => {
@@ -24,6 +24,7 @@ export const CommentList = ({ posts = [] }) => {
         };
       })}
       component={PostCard}
+      {...args}
     />
   );
 };

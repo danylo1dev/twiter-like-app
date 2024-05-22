@@ -10,3 +10,10 @@ export async function getAll(postId) {
     console.error(err);
   }
 }
+export async function create(body) {
+  try {
+    return await instance.post("comment", body);
+  } catch (err) {
+    console.error(err);
+  }
+}

@@ -8,7 +8,7 @@ export const Layout = () => {
   return (
     <div>
       <Header />
-      <Container>
+      <Container sx={{ marginTop: "16px" }}>
         <Outlet />
       </Container>
     </div>
