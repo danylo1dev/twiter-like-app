@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 export const useIsLogin = () => {
   const navigate = useNavigate();
 
@@ -10,5 +10,6 @@ export const useIsLogin = () => {
     } else {
       navigate("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

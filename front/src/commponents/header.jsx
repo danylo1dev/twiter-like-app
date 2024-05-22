@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Container, Typography, useTheme } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
-import { Profile } from "./profile";
 import { useEffect, useState } from "react";
 import { authApi } from "../axios";
+import { Profile } from "./profile";
 export const Header = () => {
   const theme = useTheme();
   const [userId, setUserId] = useState("");
@@ -10,7 +11,6 @@ export const Header = () => {
   const getMe = async () => {
     const res = await authApi.getProfile(userId);
     setProfile(res.data);
-    console.log(res.data);
   };
   useEffect(() => {
     const storedToken = sessionStorage.getItem("jwt_token");

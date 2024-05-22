@@ -3,8 +3,10 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpStatus,
   Post,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
@@ -17,6 +19,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ResponseAuthDto } from './dto/response.dto';
 import { AuthJwtGuard } from './guards/jwt-auth.guard';
+import { LoginByGoogleDto } from './dto/login-by-google.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -35,7 +38,7 @@ export class AuthController {
     return this.authService.createUser(registerDto);
   }
   @Post('/login')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 200,
     description: 'Authorized',
@@ -44,13 +47,21 @@ export class AuthController {
     return await this.authService.signIn(loginDto);
   }
   @Get('/me')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Profile',
   })
   @UseGuards(AuthJwtGuard)
   async me(@CurrentUser() user) {
     return user;
+  }
+  @Post('/loginByGoogle')
+  @HttpCode(HttpStatus.OK)
+  async loginByGoogle(
+    @Body() loginDto: LoginByGoogleDto,
+    @Headers('authorization') token: string,
+  ) {
+    return await this.authService.signInByGoogle({ ...loginDto, token: token });
   }
 }

@@ -20,9 +20,7 @@ export class UserRepository {
   }
   async getOneById(uid: string) {
     const doc = await this.userStore.doc(uid).get();
-    if (!doc.exists) {
-      console.log('No such document!');
-    } else {
+    if (doc.exists) {
       return doc.data();
     }
   }

@@ -8,7 +8,6 @@ export const PostCard = ({
   onClick,
   ...args
 }) => {
-  console.log(onClick);
   return (
     <Card {...args} sx={{ minWidth: "320px", minHeight: "160px" }}>
       <CardContent

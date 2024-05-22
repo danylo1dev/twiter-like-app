@@ -71,4 +71,12 @@ export class FirebaseService {
     const { Timestamp } = firebase.firestore;
     return Timestamp;
   }
+  async verifyToken(idToken) {
+    try {
+      await admin.auth().verifyIdToken(idToken);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }

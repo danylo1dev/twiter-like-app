@@ -24,3 +24,21 @@ export async function getProfile() {
     console.error(err);
   }
 }
+export async function authByGoogle(result) {
+  try {
+    return await instance.post(
+      `auth/loginByGoogle`,
+      {
+        email: result.user.email,
+        userId: result.user.uid,
+      },
+      {
+        headers: {
+          authorization: result.user.accessToken,
+        },
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+}

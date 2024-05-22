@@ -6,7 +6,7 @@ import { Form } from "./form";
 export const CommentForm = () => {
   const { postId } = useParams();
   const submit = async (values) => {
-    const res = await commentApi.create({ postId, ...values });
+    await commentApi.create({ postId, ...values });
   };
   const formik = useFormik({
     initialValues: {

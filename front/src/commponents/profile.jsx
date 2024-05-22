@@ -1,5 +1,4 @@
 import { Avatar, Box, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 export const Profile = ({ avatarSrc, fullName, userId }) => {
   const navigate = useNavigate();

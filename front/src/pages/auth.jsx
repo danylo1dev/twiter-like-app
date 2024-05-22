@@ -1,8 +1,8 @@
+import { Box, Button, Container } from "@mui/material";
 import { useState } from "react";
+import { GoogleLoginButton } from "../commponents/google-login-button";
 import { LoginForm } from "../commponents/login-form";
 import { RegistrationForm } from "../commponents/registration-form";
-import { Box, Button, Container } from "@mui/material";
-
 export const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   return (
@@ -32,6 +32,7 @@ export const AuthPage = () => {
           Move to {isLogin ? "Registration" : "Login"}
         </Button>
         {isLogin ? <LoginForm /> : <RegistrationForm />}
+        <GoogleLoginButton />
       </Box>
     </Container>
   );

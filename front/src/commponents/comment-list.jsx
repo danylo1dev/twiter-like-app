@@ -8,12 +8,12 @@ export const CommentList = ({ ...args }) => {
   const [data, setData] = useState([]);
   const { postId } = useParams();
   const getComments = async () => {
-    console.log(postId);
     const res = await commentApi.getAll(postId);
     setData(res.data);
   };
   useEffect(() => {
     getComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <CardList

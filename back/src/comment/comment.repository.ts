@@ -24,24 +24,19 @@ export class CommentRepository {
   }
   async create(comment: CreateComment) {
     try {
-      console.log('test');
       const newComment = await this.commentStore.add({
         ...comment,
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
       });
-      console.log('test');
-      console.log(newComment);
       return newComment.path.split('/')[1];
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
   async getOne(id: string) {
     const doc = await this.commentStore.doc(id).get();
-    if (!doc.exists) {
-      console.log('No such document!');
-    } else {
+    if (doc.exists) {
       return doc.data();
     }
   }
