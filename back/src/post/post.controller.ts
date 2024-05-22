@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -49,9 +50,9 @@ export class PostController {
   @ApiResponse({
     status: 200,
   })
-  findAll(@Query() query: FindOptionsDto) {
+  async findAll(@Query() query: FindOptionsDto) {
     const { page, limit, ...where } = query;
-    return this.postService.findAll({
+    return await this.postService.findAll({
       pagination: { page: page, limit: limit },
       where,
     });
@@ -90,5 +91,17 @@ export class PostController {
   async remove(@Param('id') id: string, @CurrentUser() user: User) {
     await this.postService.remove(id, user.uid);
     return id;
+  }
+  @Post(':postId/like')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthJwtGuard)
+  async createPostLike(
+    @Param('postId') postId: string,
+    @CurrentUser() user: User,
+  ) {
+    return await this.postService.createPostLike({
+      postId: postId,
+      userId: user.uid,
+    });
   }
 }

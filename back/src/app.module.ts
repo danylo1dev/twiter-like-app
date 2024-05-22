@@ -1,17 +1,15 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { FirebaseModule } from './firebase/firebase.module';
-import firebaseConfig from './config/firebase.config';
-import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
-import { LikeModule } from './like/like.module';
+import firebaseConfig from './config/firebase.config';
+import { FirebaseModule } from './firebase/firebase.module';
+import { PostModule } from './post/post.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-  // imports: [FirebaseModule.forRoot({ myData: 'dkaksda' })],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -22,7 +20,6 @@ import { LikeModule } from './like/like.module';
     UserModule,
     PostModule,
     CommentModule,
-    LikeModule,
     AuthModule,
   ],
   controllers: [AppController],

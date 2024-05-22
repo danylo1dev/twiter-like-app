@@ -45,7 +45,6 @@ export class PostRepository {
         }
       }
       const snapshot = await query
-        .where('text', '==', '%Ullam12%')
         .orderBy('createdAt', 'desc')
         .limit(options?.pagination?.limit || 10)
         .endAt(options?.pagination?.page * options?.pagination?.limit || 10)
@@ -71,5 +70,35 @@ export class PostRepository {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: Unreachable code error
     return await this.postStore.doc(id).delete();
+  }
+  async getLikesCountForPost(postId: string): Promise<number> {
+    const snapshot = await this.postStore.doc(postId).collection('likes').get();
+    return snapshot.docs.length;
+  }
+  async createPostLike(data: { postId: string; userId: string }) {
+    const postRef = await this.postStore.doc(data.postId);
+    const postSnapshot = await postRef.get();
+
+    if (!postSnapshot.exists) {
+      return 'Post not found';
+    }
+    const post = postSnapshot.data();
+    if (post.userId === data.userId) {
+      return 'You cannot like your own post!';
+    }
+    const likesRef = await postRef.collection('likes');
+    const likeSnapshot = await likesRef
+      .where('userId', '==', data.userId)
+      .get();
+    if (!likeSnapshot.empty) {
+      const likeDoc = likeSnapshot.docs[0];
+      await likeDoc.ref.delete();
+      return 'Like on post deleted successfully';
+    } else {
+      await likesRef.add({
+        userId: data.userId,
+      });
+      return 'Like on post created';
+    }
   }
 }

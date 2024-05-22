@@ -16,11 +16,25 @@ export class PostService {
   }
 
   async findAll(options?: findOptions) {
-    return await this.postRepository.getMany(options);
+    const posts = await this.postRepository.getMany(options);
+    const res = [];
+    for (const post of posts) {
+      const likeCount = await this.postRepository.getLikesCountForPost(post.id);
+      res.push({
+        ...post,
+        likeCount,
+      });
+    }
+    return res;
   }
 
-  async findOne(id: string) {
-    return await this.postRepository.getOne(id);
+  async findOne(id: string): Promise<any> {
+    const post = await this.postRepository.getOne(id);
+    const likeCount = await this.postRepository.getLikesCountForPost(post.id);
+    return {
+      ...post,
+      likeCount,
+    };
   }
 
   async update(id: string, updatePostDto: UpdatePostDto, userId: string) {
@@ -44,5 +58,9 @@ export class PostService {
     } catch (err) {
       throw err;
     }
+  }
+  async createPostLike(postLike: any) {
+    await this.postRepository.createPostLike(postLike);
+    return { post: postLike };
   }
 }
