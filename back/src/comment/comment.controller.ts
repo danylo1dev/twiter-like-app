@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -28,9 +29,9 @@ export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.CREATED,
     description: 'Created',
   })
   @UseGuards(AuthJwtGuard)
@@ -43,17 +44,17 @@ export class CommentController {
   }
 
   @Get()
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     // type: ,
   })
   findAll() {
     return this.commentService.findAll();
   }
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     // type: ,
   })
   @Get(':id')
@@ -61,9 +62,9 @@ export class CommentController {
     return this.commentService.findOneById(id);
   }
 
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     // type: ,
   })
   @Patch(':id')
@@ -77,9 +78,9 @@ export class CommentController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
-    status: 204,
+    status: HttpStatus.NO_CONTENT,
     // type: ,
   })
   @UseGuards(AuthJwtGuard)

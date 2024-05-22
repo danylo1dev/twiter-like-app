@@ -16,7 +16,7 @@ import { UserModule } from './user/user.module';
       load: [firebaseConfig],
       expandVariables: true,
     }),
-    FirebaseModule,
+    FirebaseModule.forRoot(firebaseConfig()),
     UserModule,
     PostModule,
     CommentModule,

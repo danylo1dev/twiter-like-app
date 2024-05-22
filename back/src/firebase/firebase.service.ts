@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { App } from 'firebase-admin/app';
 import { Auth, getAuth } from 'firebase-admin/auth';
 import { Timestamp, getFirestore } from 'firebase-admin/firestore';
-import { FirebaseApp } from 'firebase/app';
+import { FirebaseApp, FirebaseOptions } from 'firebase/app';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -18,7 +18,7 @@ export class FirebaseService {
   private readonly serviceApp: App;
   private readonly firebase: FirebaseApp;
   public readonly auth;
-  constructor() {
+  constructor(@Inject('CONFIG_OPTIONS') firebaseConfig: FirebaseOptions) {
     if (!admin?.apps?.length) {
       this.serviceApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
@@ -29,14 +29,7 @@ export class FirebaseService {
     }
     //TO-DO
     // delete later
-    this.firebase = firebase.initializeApp({
-      apiKey: 'AIzaSyC0c7AuYqHsZWMjP1hsCtQg50UT_756JVE',
-      authDomain: 'twiter-like.firebaseapp.com',
-      projectId: 'twiter-like',
-      storageBucket: 'twiter-like.appspot.com',
-      messagingSenderId: '16937741345',
-      appId: '1:16937741345:web:c3a70e21058c3fdcdf4760',
-    });
+    this.firebase = firebase.initializeApp(firebaseConfig);
   }
   getApp() {
     return this.serviceApp;

@@ -28,9 +28,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.CREATED,
     description: 'Registrated',
     type: ResponseAuthDto,
   })
@@ -40,7 +40,7 @@ export class AuthController {
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Authorized',
   })
   async login(@Body() loginDto: LoginDto) {

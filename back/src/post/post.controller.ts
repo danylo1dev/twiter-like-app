@@ -23,6 +23,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { FindOptionsDto } from './dto/find-options.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
+import { ResponsePostDto } from './dto/response-post.dto';
 
 @Controller('post')
 @ApiTags('Posts')
@@ -31,13 +32,17 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Created',
+    type: String,
   })
   @UseGuards(AuthJwtGuard)
-  create(@Body() createPostDto: CreatePostDto, @CurrentUser() user) {
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @CurrentUser() user,
+  ): Promise<string> {
     return this.postService.create({
       ...createPostDto,
       userId: user.uid,
@@ -46,11 +51,12 @@ export class PostController {
   }
 
   @Get()
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
+    type: [ResponsePostDto],
   })
-  async findAll(@Query() query: FindOptionsDto) {
+  async findAll(@Query() query: FindOptionsDto): Promise<ResponsePostDto[]> {
     const { page, limit, ...where } = query;
     return await this.postService.findAll({
       pagination: { page: page, limit: limit },
@@ -59,41 +65,51 @@ export class PostController {
   }
 
   @Get(':id')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
+    type: ResponsePostDto,
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<ResponsePostDto> {
     return this.postService.findOne(id);
   }
 
   @Patch(':id')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
+    type: String,
   })
   @UseGuards(AuthJwtGuard)
   async update(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<string> {
     await this.postService.update(id, updatePostDto, user.uid);
     return id;
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({
-    status: 204,
+    status: HttpStatus.NO_CONTENT,
+    description: 'Deleted',
   })
   @UseGuards(AuthJwtGuard)
-  async remove(@Param('id') id: string, @CurrentUser() user: User) {
+  async remove(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<void> {
     await this.postService.remove(id, user.uid);
-    return id;
+    return null;
   }
   @Post(':postId/like')
   @HttpCode(HttpStatus.CREATED)
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Created',
+  })
   @UseGuards(AuthJwtGuard)
   async createPostLike(
     @Param('postId') postId: string,

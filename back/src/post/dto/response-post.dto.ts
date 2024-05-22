@@ -1,20 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { CreatePostDto } from './create-post.dto';
 
-export class ResponseCommentDto {
+export class ResponsePostDto extends CreatePostDto {
   @ApiProperty({
     type: String,
   })
-  'postId': string;
+  userId: string;
   @ApiProperty({
     type: String,
   })
-  'text': string;
+  username: string;
   @ApiProperty({
     type: String,
   })
-  'userId': string;
+  postId: string;
   @ApiProperty({
-    type: String,
+    type: Number,
   })
-  'username': string;
+  likeCount: number;
 }

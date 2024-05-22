@@ -1,3 +1,7 @@
 import { Post } from '../entities/post.entity';
 
-export class CreatePost extends Post {}
+export interface CreatePost {
+  text: string;
+  userId: string;
+  username: string;
+}
