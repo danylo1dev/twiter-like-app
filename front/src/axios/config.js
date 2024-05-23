@@ -1,7 +1,5 @@
 import axios from "axios";
-// const config = {
-//   headers: { Authorization: `Bearer ${token}` },
-// };
+
 const token = sessionStorage.getItem("jwt_token");
 
 export const instance = axios.create({

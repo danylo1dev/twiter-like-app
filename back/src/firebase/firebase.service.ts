@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { App } from 'firebase-admin/app';
 import { Auth, getAuth } from 'firebase-admin/auth';
-import { Timestamp, getFirestore } from 'firebase-admin/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
 import { FirebaseApp, FirebaseOptions } from 'firebase/app';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
