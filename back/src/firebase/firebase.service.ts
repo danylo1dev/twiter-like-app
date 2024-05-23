@@ -18,7 +18,7 @@ export class FirebaseService {
   private readonly serviceApp: App;
   private readonly firebase: FirebaseApp;
   public readonly auth;
-  constructor(@Inject('CONFIG_OPTIONS') firebaseConfig: FirebaseOptions) {
+  constructor() {
     if (!admin?.apps?.length) {
       this.serviceApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
@@ -27,9 +27,16 @@ export class FirebaseService {
     } else {
       this.serviceApp = admin.apps[0];
     }
-    //TO-DO
-    // delete later
-    this.firebase = firebase.initializeApp(firebaseConfig);
+
+    this.firebase = firebase.initializeApp({
+      apiKey: process.env.API_KEY,
+      authDomain: process.env.AUTH_DOMAIN,
+      projectId: process.env.PROJECT_ID,
+      storageBucket: process.env.STORAGE_BUCKET,
+      messagingSenderId: process.env.MESSAGING_SENDER_ID,
+      appId: process.env.APP_ID,
+      measurementId: process.env.MEASUREMENT_ID,
+    });
   }
   getApp() {
     return this.serviceApp;
