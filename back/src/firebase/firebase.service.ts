@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import { storage } from 'firebase-admin';
 import { App } from 'firebase-admin/app';
 import { Auth, getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
-import { FirebaseApp, FirebaseOptions } from 'firebase/app';
+import { getApp } from 'firebase-functions/lib/common/app';
+import { FirebaseApp } from 'firebase/app';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -23,11 +25,12 @@ export class FirebaseService {
       this.serviceApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         databaseURL: 'https://-default-.firebaseio.com',
+        storageBucket: process.env.BUCKET_NAME,
       });
     } else {
       this.serviceApp = admin.apps[0];
     }
-
+    console.log(process.env.API_KEY);
     this.firebase = firebase.initializeApp({
       apiKey: process.env.API_KEY,
       authDomain: process.env.AUTH_DOMAIN,
@@ -78,5 +81,8 @@ export class FirebaseService {
     } catch (error) {
       return false;
     }
+  }
+  getStorage() {
+    return storage(this.serviceApp);
   }
 }

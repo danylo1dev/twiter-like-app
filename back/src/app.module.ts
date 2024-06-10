@@ -8,6 +8,7 @@ import firebaseConfig from './config/firebase.config';
 import { FirebaseModule } from './firebase/firebase.module';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
+import { StoreModule } from './store/store.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     PostModule,
     CommentModule,
     AuthModule,
+    StoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

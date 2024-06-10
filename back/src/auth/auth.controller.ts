@@ -7,6 +7,8 @@ import {
   Post,
   UseGuards,
   Headers,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
@@ -20,6 +22,7 @@ import { RegisterDto } from './dto/register.dto';
 import { ResponseAuthDto } from './dto/response.dto';
 import { AuthJwtGuard } from './guards/jwt-auth.guard';
 import { LoginByGoogleDto } from './dto/login-by-google.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -29,13 +32,22 @@ export class AuthController {
 
   @Post('/register')
   @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('file'))
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Registrated',
     type: ResponseAuthDto,
   })
-  register(@Body() registerDto: RegisterDto): Promise<ResponseAuthDto> {
-    return this.authService.createUser(registerDto);
+  register(
+    @Body() registerDto: RegisterDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ResponseAuthDto> {
+    try {
+      console.log(file.originalname);
+      return this.authService.createUser(registerDto, file.buffer);
+    } catch (err) {
+      return err;
+    }
   }
   @Post('/login')
   @HttpCode(HttpStatus.OK)

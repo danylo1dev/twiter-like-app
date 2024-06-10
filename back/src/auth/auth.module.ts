@@ -10,12 +10,15 @@ import { AuthJwtGuard } from './guards/jwt-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthLocalGuard } from './guards/local-auth.guard';
+import { StoreModule } from 'src/store/store.module';
+import { StoreService } from 'src/store/store.service';
 
 @Module({
   imports: [
     JwtModule.registerAsync({
       useFactory: authJwtConfig,
     }),
+    StoreModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -27,6 +30,7 @@ import { AuthLocalGuard } from './guards/local-auth.guard';
     LocalStrategy,
     AuthLocalGuard,
     AuthJwtGuard,
+    StoreService,
   ],
 })
 export class AuthModule {}

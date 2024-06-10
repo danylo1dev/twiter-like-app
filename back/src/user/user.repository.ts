@@ -3,6 +3,7 @@ import { Firestore } from 'firebase-admin/firestore';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { CreateUser } from './create-user.interface';
 import { UpdateUser } from './update-user.interface';
+import { StoreService } from 'src/store/store.service';
 
 @Injectable()
 export class UserRepository {

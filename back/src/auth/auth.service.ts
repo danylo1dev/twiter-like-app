@@ -12,6 +12,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LoginByGoogleDto } from './dto/login-by-google.dto';
 import { UserRecord } from 'firebase-functions/v1/auth';
+import { StoreService } from 'src/store/store.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private readonly firebaseService: FirebaseService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly storage: StoreService,
   ) {}
   public getTokenForUser(user: any): string {
     return this.jwtService.sign({
@@ -27,33 +29,42 @@ export class AuthService {
       sub: user.uid,
     });
   }
-  async createUser(createAuthDto: RegisterDto) {
+  async createUser(createAuthDto: RegisterDto, file: Buffer) {
+    let exUser;
     try {
-      const exUser = await this.firebaseService
+      exUser = await this.firebaseService
         .getAuth()
         .getUserByEmail(createAuthDto.email);
-      if (exUser) {
-        throw new ForbiddenException(
-          `User with ${createAuthDto.email} alredy exist`,
-        );
-      }
-      const user = await this.firebaseService.getAuth().createUser({
-        email: createAuthDto.email,
-        password: createAuthDto.password,
-      });
-      const userProfile: CreateUser = {
-        uid: user.uid,
-        email: createAuthDto.email,
-        firstName: createAuthDto.firstName,
-        lastName: createAuthDto.lastName,
-      };
-      const recordUser = await this.userService.create(userProfile);
-      return {
-        userId: user.uid,
-        token: this.getTokenForUser(userProfile),
-      };
     } catch (err) {
-      throw err;
+      try {
+        if (exUser) {
+          throw new ForbiddenException(
+            `User with ${createAuthDto.email} alredy exist`,
+          );
+        }
+        const user = await this.firebaseService.getAuth().createUser({
+          email: createAuthDto.email,
+          password: createAuthDto.password,
+        });
+        const filepath = await this.storage.uploadImage(
+          `/users/${user.uid}`,
+          file,
+        );
+        const userProfile: CreateUser = {
+          uid: user.uid,
+          email: createAuthDto.email,
+          firstName: createAuthDto.firstName,
+          lastName: createAuthDto.lastName,
+          photoURL: filepath,
+        };
+        const recordUser = await this.userService.create(userProfile);
+        return {
+          userId: user.uid,
+          token: this.getTokenForUser(userProfile),
+        };
+      } catch (err) {
+        throw err;
+      }
     }
   }
 
