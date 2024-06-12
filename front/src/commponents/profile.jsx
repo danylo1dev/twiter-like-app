@@ -1,7 +1,24 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-export const Profile = ({ avatarSrc, fullName, userId }) => {
+import { useEffect, useState } from "react";
+import { getImg } from "../firebase/storage";
+export const Profile = ({ avatarSrc, fullName, userId, provider }) => {
   const navigate = useNavigate();
+  const [src, setSrc] = useState("");
+  const getSrc = async () => {
+    if (avatarSrc) {
+      if (avatarSrc.includes("googleusercontent")) {
+        setSrc(avatarSrc);
+        return;
+      }
+      console.log(avatarSrc);
+      const res = await getImg(avatarSrc);
+      setSrc(res);
+    }
+  };
+  useEffect(() => {
+    getSrc();
+  }, [avatarSrc]);
   return (
     <Box
       sx={{
@@ -16,7 +33,7 @@ export const Profile = ({ avatarSrc, fullName, userId }) => {
           navigate("/user/" + userId);
         }}
         alt="Remy Sharp"
-        src={avatarSrc}
+        src={src}
         sx={{
           ":hover": {
             cursor: "pointer",

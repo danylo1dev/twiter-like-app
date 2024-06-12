@@ -4,12 +4,14 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { authApi } from "../axios";
 import { Profile } from "./profile";
+import { Link } from "react-router-dom";
 export const Header = () => {
   const theme = useTheme();
   const [userId, setUserId] = useState("");
   const [profile, setProfile] = useState();
   const getMe = async () => {
     const res = await authApi.getProfile(userId);
+    console.log(res.data);
     setProfile(res.data);
   };
   useEffect(() => {
@@ -40,12 +42,16 @@ export const Header = () => {
       >
         <Typography variant="h4">Twiter</Typography>
         <Box>
-          <Profile
-            fullName={
-              profile ? profile.firstName + " " + profile.lastName : "Loading"
-            }
-            userId={userId}
-          />
+          {profile && (
+            <Profile
+              fullName={
+                profile ? profile.firstName + " " + profile.lastName : "Loading"
+              }
+              userId={userId}
+              avatarSrc={profile.photoURL}
+              provider={profile.provider}
+            />
+          )}
         </Box>
       </Container>
     </Box>

@@ -4,6 +4,7 @@ import { HomePage } from "./pages/home";
 import { Layout } from "./pages/layout";
 import { AuthPage } from "./pages/auth";
 import { PostPage } from "./pages/post";
+import { AddPostPage } from "./pages/add-post";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: "/feed/",
         element: <FeedPage />,
+      },
+      {
+        path: "/feed/add-post",
+        element: <AddPostPage />,
       },
       {
         path: "/feed/post/:postId",

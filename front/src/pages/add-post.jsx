@@ -1,19 +1,21 @@
 import { Button } from "@mui/material";
-import { PostList } from "../commponents/post-list.jsx";
 import { useNavigate } from "react-router-dom";
-export const FeedPage = () => {
+import { AddPostForm } from "../commponents/add-post-form";
+
+export const AddPostPage = () => {
   const navigate = useNavigate();
   return (
     <>
       <Button
-        onClick={() => navigate("/feed/add-post")}
+        onClick={() => navigate("/feed")}
         variant="contained"
         component="label"
         fullWidth
+        sx={{ marginBottom: "16px" }}
       >
-        Create post
+        back to feed
       </Button>
-      <PostList />
+      <AddPostForm />
     </>
   );
 };
