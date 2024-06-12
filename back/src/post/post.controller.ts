@@ -9,7 +9,9 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
@@ -24,6 +26,7 @@ import { FindOptionsDto } from './dto/find-options.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
 import { ResponsePostDto } from './dto/response-post.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('post')
 @ApiTags('Posts')
@@ -39,15 +42,21 @@ export class PostController {
     type: String,
   })
   @UseGuards(AuthJwtGuard)
+  @UseInterceptors(FileInterceptor('file'))
   create(
     @Body() createPostDto: CreatePostDto,
     @CurrentUser() user,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<string> {
-    return this.postService.create({
-      ...createPostDto,
-      userId: user.uid,
-      username: `${user.firstName} ${user.lastName}`,
-    });
+    return this.postService.create(
+      {
+        ...createPostDto,
+        userId: user.uid,
+        username: `${user.firstName} ${user.lastName}`,
+        userPhotoUrl: user.photoURL || '',
+      },
+      file.buffer,
+    );
   }
 
   @Get()
@@ -64,13 +73,14 @@ export class PostController {
     });
   }
 
-  @Get(':id')
+  @Get('/:id')
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     type: ResponsePostDto,
   })
   findOne(@Param('id') id: string): Promise<ResponsePostDto> {
+    console.log(id);
     return this.postService.findOne(id);
   }
 

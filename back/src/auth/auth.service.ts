@@ -35,36 +35,37 @@ export class AuthService {
       exUser = await this.firebaseService
         .getAuth()
         .getUserByEmail(createAuthDto.email);
-    } catch (err) {
-      try {
-        if (exUser) {
-          throw new ForbiddenException(
-            `User with ${createAuthDto.email} alredy exist`,
-          );
-        }
-        const user = await this.firebaseService.getAuth().createUser({
-          email: createAuthDto.email,
-          password: createAuthDto.password,
-        });
-        const filepath = await this.storage.uploadImage(
-          `/users/${user.uid}`,
-          file,
+    } catch (err) {}
+
+    try {
+      if (exUser) {
+        throw new ForbiddenException(
+          `User with ${createAuthDto.email} alredy exist`,
         );
-        const userProfile: CreateUser = {
-          uid: user.uid,
-          email: createAuthDto.email,
-          firstName: createAuthDto.firstName,
-          lastName: createAuthDto.lastName,
-          photoURL: filepath,
-        };
-        const recordUser = await this.userService.create(userProfile);
-        return {
-          userId: user.uid,
-          token: this.getTokenForUser(userProfile),
-        };
-      } catch (err) {
-        throw err;
       }
+      const user = await this.firebaseService.getAuth().createUser({
+        email: createAuthDto.email,
+        password: createAuthDto.password,
+      });
+      const filepath = await this.storage.uploadImage(
+        `users/${user.uid}`,
+        file,
+      );
+      const userProfile: CreateUser = {
+        uid: user.uid,
+        email: createAuthDto.email,
+        firstName: createAuthDto.firstName,
+        lastName: createAuthDto.lastName,
+        photoURL: filepath,
+        provider: 'local',
+      };
+      const recordUser = await this.userService.create(userProfile);
+      return {
+        userId: user.uid,
+        token: this.getTokenForUser(userProfile),
+      };
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -78,6 +79,7 @@ export class AuthService {
       email: user.email,
       firstName: userRecord.firstName,
       lastName: userRecord.lastName,
+      provider: 'local',
     };
     return {
       userId: user.uid,
@@ -94,11 +96,15 @@ export class AuthService {
         const user: UserRecord = await this.firebaseService
           .getAuth()
           .getUser(createAuthDto.userId);
+        console.log(user);
+
         const userProfile: CreateUser = {
           uid: user.uid,
           email: createAuthDto.email,
           firstName: user.displayName.split(' ')[0],
           lastName: user.displayName.split(' ')[1],
+          photoURL: user.photoURL,
+          provider: 'google',
         };
         const recordUser = await this.userService.create(userProfile);
       }

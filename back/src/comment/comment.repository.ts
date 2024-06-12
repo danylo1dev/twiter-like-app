@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Firestore, Timestamp } from 'firebase-admin/firestore';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { CreateComment } from './types/create-comment';
-import { UpdateComment } from './types/update-comment';
-import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
 import { UpdatePost } from 'src/post/types/update-post.interface';
-import {
-  CommentWhere,
-  CommentFindOptions,
-} from './types/find-comment-options.type';
+import { mapArrayFromSnaphot } from 'src/shared/mapSnapshot';
 import { whereParser } from 'src/shared/whereParser';
+import { CreateComment } from './types/create-comment';
+import { CommentFindOptions } from './types/find-comment-options.type';
 
 @Injectable()
 export class CommentRepository {

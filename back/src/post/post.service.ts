@@ -7,12 +7,27 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './post.repository';
 import { CreatePost } from './types/create-post.interface';
 import { findOptions } from './types/find-options.type';
+import { StoreService } from 'src/store/store.service';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly postRepository: PostRepository) {}
-  async create(createPostDto: CreatePost) {
-    return await this.postRepository.create(createPostDto);
+  constructor(
+    private readonly postRepository: PostRepository,
+    private readonly storage: StoreService,
+  ) {}
+  async create(createPostDto: CreatePost, file: Buffer) {
+    try {
+      const filepath = await this.storage.uploadImage(
+        `posts/${Date.now()}-${createPostDto.userId}`,
+        file,
+      );
+      return await this.postRepository.create({
+        ...createPostDto,
+        fileUrl: filepath,
+      });
+    } catch (err) {
+      throw err;
+    }
   }
 
   async findAll(options?: findOptions) {
@@ -30,9 +45,10 @@ export class PostService {
 
   async findOne(id: string): Promise<any> {
     const post = await this.postRepository.getOne(id);
-    const likeCount = await this.postRepository.getLikesCountForPost(post.id);
+    const likeCount = await this.postRepository.getLikesCountForPost(id);
     return {
       ...post,
+      id,
       likeCount,
     };
   }

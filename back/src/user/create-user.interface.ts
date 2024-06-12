@@ -4,4 +4,5 @@ export class CreateUser {
   firstName: string;
   lastName: string;
   photoURL?: string;
+  provider: string;
 }

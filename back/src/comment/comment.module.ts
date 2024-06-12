@@ -9,6 +9,7 @@ import { UserRepository } from 'src/user/user.repository';
 import { CommentController } from './comment.controller';
 import { CommentRepository } from './comment.repository';
 import { CommentService } from './comment.service';
+import { StoreService } from 'src/store/store.service';
 
 @Module({
   imports: [FirebaseModule],
@@ -22,6 +23,7 @@ import { CommentService } from './comment.service';
     CommentRepository,
     PostService,
     PostRepository,
+    StoreService,
   ],
 })
 export class CommentModule {}

@@ -43,7 +43,6 @@ export class AuthController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseAuthDto> {
     try {
-      console.log(file.originalname);
       return this.authService.createUser(registerDto, file.buffer);
     } catch (err) {
       return err;

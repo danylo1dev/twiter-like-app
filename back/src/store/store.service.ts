@@ -15,6 +15,7 @@ export class StoreService {
     } catch (err) {
       throw err;
     }
+
     const file = this.firebaseService
       .getStorage()
       .bucket('fotos')

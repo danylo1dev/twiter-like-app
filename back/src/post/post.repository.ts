@@ -31,7 +31,8 @@ export class PostRepository {
     return newPost.path.split('/')[1];
   }
   async getOne(id: string) {
-    const doc = await this.postStore.doc(id).get();
+    console.log(id);
+    const doc = await this.firestore.collection('posts').doc(id).get();
     if (doc.exists) {
       return doc.data();
     }
